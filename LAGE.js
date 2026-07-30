@@ -22,3 +22,10 @@ export class Vector {
         return new Vector(c.cx, c.cy, c.cz);
     }
 }
+export const SYN_State = {
+    CO: false,
+    TOR: false,
+    LAGE: false,
+    RECALL: false
+};
+
