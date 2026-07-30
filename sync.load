@@ -49,3 +49,7 @@ export function SYN_Runtime() {
         SYNC: syncState
     };
 }
+function updateRuntimePanel(state) {
+    document.getElementById("runtime").innerText =
+        JSON.stringify(state, null, 2);
+}
