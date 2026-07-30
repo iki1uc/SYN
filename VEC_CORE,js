@@ -14,3 +14,7 @@ export function VEC_CORE(ion){
         flight: opt.optimize()
     };
 }
+export function VEC_PIPELINE(input) {
+    const vec = new Vector(input);
+    return VEC_CORE.process(vec);
+}
