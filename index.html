@@ -2,52 +2,58 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>SYN – Synchronisationsachse · iki1uc</title>
+<title>iki1uc Runtime</title>
 
 <style>
-body { background:#000; color:#0f0; font-family:monospace; padding:40px; }
-.block { background:#111; border:1px solid #333; padding:25px; margin-bottom:30px; border-radius:8px; }
-.title { font-size:22px; color:#6cf; margin-bottom:10px; }
-pre { background:#000; border-left:3px solid #6cf; padding:15px; }
+body {
+    background:#000;
+    color:#0f0;
+    font-family:Consolas, monospace;
+    padding:20px;
+}
+#runtime {
+    background:#111;
+    padding:15px;
+    border:1px solid #333;
+    white-space:pre;
+}
 </style>
-
-<script type="module">
-import { SYN_CORE } from "./SYN.js";
-import { MIA_FUSION } from "../MIA/mia.core.js";
-import { ECHO_CORE } from "../ECHO/CR.js";
-import { HUB_CORE } from "../HUB/HUB.core.js";
-import { NC_QUANTUM } from "../NC/NC_Quantum.js";
-import { PQ_HYPER } from "../PQ/PQ_Hyper.js";
-import { TMP_GHOST } from "../TMP/TMP_Ghost.js";
-
-(async function(){
-
-    const nc = NC_QUANTUM();
-    const pq = PQ_HYPER(nc);
-    const tmp = TMP_GHOST(pq);
-    const hub = HUB_CORE(nc, pq, tmp);
-
-    const mia = MIA_FUSION(hub, { pulse: hub.pulse });
-    const echo = ECHO_CORE({ pulse: hub.pulse, warp: hub.pulse, charge: hub.pulse, curvature: hub.pulse });
-
-    const syn = SYN_CORE(mia, echo);
-
-    document.getElementById("syn").innerText =
-        JSON.stringify(syn, null, 2);
-
-})();
-</script>
-
 </head>
 
 <body>
 
-<h1>SYN – Synchronisationsachse</h1>
+<h1>iki1uc Runtime</h1>
+<pre id="runtime">Starte Runtime…</pre>
 
-<div class="block">
-    <div class="title">SYN‑Status</div>
-    <pre id="syn"></pre>
-</div>
+<script type="module">
+    import { SYN_Runtime } from "./sync.load.js";
+    import { VEC_CORE } from "./VEC_CORE.js";
+    import { FLX_CORE } from "./FLX_CORE.js";
+
+    function run() {
+
+        // 1 — SYN (Systemstart)
+        const syn = SYN_Runtime();
+
+        // 2 — VEC (Vektorlogik)
+        const vec = VEC_CORE(syn);
+
+        // 3 — FLX (Optimierung)
+        const flx = FLX_CORE(vec);
+
+        // ARC — Anzeige
+        const state = {
+            SYN: syn,
+            VEC: vec,
+            FLX: flx
+        };
+
+        document.getElementById("runtime").innerText =
+            JSON.stringify(state, null, 2);
+    }
+
+    run();
+</script>
 
 </body>
 </html>
