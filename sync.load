@@ -1,32 +1,51 @@
-<div class="block">
-    <div class="title">SYN – Synchronisation</div>
-    <pre id="syn"></pre>
-</div>
-<div class="block">
-    <div class="title">FLX – Flexion</div>
-    <pre id="flx"></pre>
-</div>
-<div class="block">
-    <div class="title">VEC – Vektor</div>
-    <pre id="vec"></pre>
-</div>
-<div class="block">
-    <div class="title">ARC – Archiv</div>
-    <pre id="arc"></pre>
-</div>
-# SYN · FLX · VEC · ARC – Achsen · iki1uc
+// SYN/sync.load
 
-## SYN – Synchronisationsachse
-Synchronisiert MIA und ECHO.
-Erzeugt Lock‑Werte und Stabilitätsstatus.
+import { CO } from "./CO.js";
+import { TOR } from "./TOR.js";
+import { LAGE } from "./LAGE.js";
+import { FLX_CORE } from "./FLX_CORE.js";
+import { VEC_CORE } from "./VEC_CORE.js";
+import { RECALL } from "./re.js";
 
-## FLX – Flexionsachse
-Krümmt ECHO‑Resonanzen.
-Nutzen vector.js + opta.js für Flugkrümmung.
+import { RESPO_Whirl } from "../RESPO_Whirl.js";
+import { VECTOR_render } from "../VECTOR.render.js";
+import { NC_FullSync } from "../NC.link.js";
+import { TeamEngine } from "../TeamEngine.js";
+import { ANKER } from "../ANKER.js";
 
-## VEC – Vektorachse
-Erzeugt Pulse‑Vektoren aus ION.
-Nutzen vector.js + opta.js für Flugoptimierung.
+export function SYN_Runtime() {
 
-## ARC – Archivachse
-Speichert Pulse‑Zustände aus PUL, ION, MIA, ECHO.
+    // 1. Achsen laden
+    CO.init();
+    TOR.open();
+    LAGE.set();
+    FLX_CORE.boot();
+    VEC_CORE.init();
+    RECALL.arm();
+
+    // 2. RESPO starten
+    const respoPacket = RESPO_Whirl();
+
+    // 3. Vektor rendern
+    const vectorState = VECTOR_render(respoPacket);
+
+    // 4. FullSync
+    const syncState = NC_FullSync(vectorState);
+
+    // 5. Team‑Engine aktivieren
+    const teamState = TeamEngine(syncState);
+
+    // 6. ANKER stabilisieren
+    const anchorState = ANKER(teamState);
+
+    // 7. QI/IQQ setzen
+    return {
+        QI: anchorState.QI,
+        IQQ: anchorState.IQQ,
+        INIT: anchorState.INIT,
+        TEAM: teamState,
+        VECTOR: vectorState,
+        RESPO: respoPacket,
+        SYNC: syncState
+    };
+}
