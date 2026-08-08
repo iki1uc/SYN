@@ -2,57 +2,88 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>iki1uc Runtime</title>
+<title>SYN — Pulse Engine</title>
 
 <style>
-body {
-    background:#000;
-    color:#0f0;
-    font-family:Consolas, monospace;
-    padding:20px;
-}
-#runtime {
-    background:#111;
-    padding:15px;
-    border:1px solid #333;
-    white-space:pre;
-}
+  body { background:#111; color:#0f0; font-family:Consolas; padding:20px; }
+  .box { border:1px solid #0f0; padding:20px; width:360px; margin-bottom:20px; }
+  .title { color:#6cf; font-size:18px; margin-bottom:10px; }
+  canvas { background:#000; display:block; margin:20px auto; }
 </style>
 </head>
 
 <body>
 
-<h1>iki1uc Runtime</h1>
-<pre id="runtime">Starte Runtime…</pre>
+<h2>SYN — Pulse Engine</h2>
+
+<div class="box">
+  <div class="title">SYN‑Status</div>
+  <div>ID: iki1uc</div>
+  <div>Achse: SYN</div>
+  <div>Modul: FLX · VEC · ARC</div>
+  <div>SYNC: <span id="sync">–</span></div>
+</div>
+
+<div class="box">
+  <div class="title">Achsen‑Impulse</div>
+  <div>VEC‑Magnitude: <span id="mag">–</span></div>
+  <div>FLX‑Core: <span id="flx">–</span></div>
+  <div>ARC‑Drift: <span id="arc">–</span></div>
+</div>
+
+<canvas id="synth" width="900" height="600"></canvas>
 
 <script type="module">
-    import { SYN_Runtime } from "./sync.load.js";
-    import { VEC_CORE } from "./VEC_CORE.js";
-    import { FLX_CORE } from "./FLX_CORE.js";
+import { Vector } from "./vector.js";
+import { FLX_CORE } from "./FLX_CORE.js";
+import { ARC } from "./opta.js";
 
-    function run() {
+// ------------------------------------------------------
+// SYN — Pulse Engine
+// ------------------------------------------------------
 
-        // 1 — SYN (Systemstart)
-        const syn = SYN_Runtime();
+const ctx = document.getElementById("synth").getContext("2d");
+let t = 0;
 
-        // 2 — VEC (Vektorlogik)
-        const vec = VEC_CORE(syn);
+function SYN_ENGINE() {
+  t += 0.01;
 
-        // 3 — FLX (Optimierung)
-        const flx = FLX_CORE(vec);
+  // VEC — Magnitude
+  const vec = new Vector(Math.sin(t), Math.cos(t), Math.sin(t*0.5));
+  const mag = vec.magnitude();
 
-        // ARC — Anzeige
-        const state = {
-            SYN: syn,
-            VEC: vec,
-            FLX: flx
-        };
+  // FLX — Core Pulse
+  const flx = FLX_CORE(t);
 
-        document.getElementById("runtime").innerText =
-            JSON.stringify(state, null, 2);
-    }
+  // ARC — Drift
+  const arc = ARC(t);
 
-    run();
+  // UI
+  document.getElementById("sync").innerText = "ACTIVE";
+  document.getElementById("mag").innerText = mag.toFixed(3);
+  document.getElementById("flx").innerText = flx.toFixed(3);
+  document.getElementById("arc").innerText = arc.toFixed(3);
+
+  // Canvas
+  ctx.clearRect(0,0,900,600);
+
+  for (let i = 0; i < 180; i++) {
+    const fade = Math.sin(t + i * 0.02);
+    if (fade < 0.2) continue;
+
+    const x = 450 + Math.sin(t + i * 0.01) * (mag * 80);
+    const y = 300 + Math.cos(t + i * 0.01) * (flx * 80);
+
+    ctx.fillStyle = `rgba(${arc*40}, 200, 255, ${fade})`;
+    ctx.beginPath();
+    ctx.arc(x, y, 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  requestAnimationFrame(SYN_ENGINE);
+}
+
+SYN_ENGINE();
 </script>
 
 </body>
