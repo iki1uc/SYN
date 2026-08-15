@@ -1,8 +1,83 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>SYN — Final Form Engine</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: #0a0a0a;
+        color: #e0e0e0;
+        font-family: Consolas, monospace;
+    }
+
+    header {
+        padding: 20px;
+        text-align: center;
+        background: #111;
+        border-bottom: 2px solid #222;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 26px;
+        color: #6cf;
+        letter-spacing: 2px;
+    }
+
+    .panel {
+        width: 420px;
+        margin: 20px auto;
+        padding: 20px;
+        background: #111;
+        border: 1px solid #333;
+        border-radius: 6px;
+    }
+
+    .panel-title {
+        font-size: 18px;
+        color: #6cf;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .panel div {
+        margin: 6px 0;
+        font-size: 15px;
+    }
+
+    canvas {
+        display: block;
+        margin: 30px auto;
+        background: #000;
+        border: 1px solid #333;
+        border-radius: 6px;
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>SYN — Final Form Engine</h1>
+</header>
+
+<div class="panel">
+    <div class="panel-title">Form‑Etage</div>
+    <div>Etage: <span id="etage">–</span></div>
+    <div>Modul: <span id="modul">–</span></div>
+    <div>Aufgabe: <span id="aufgabe">–</span></div>
+</div>
+
+<canvas id="synth" width="900" height="600"></canvas>
+
 <script type="module">
 import { FORM_CORE } from "./FORM_CORE.js";
 import { FORM_MATRIX } from "./FORM_MATRIX.js";
 import { FORM_ENGINE } from "./FORM_ENGINE.js";
-import { SYN_CORE } from "./syn.js";   // ← KORREKT
+import { SYN_CORE } from "./syn.js";
 
 let matrix = FORM_MATRIX(FORM_CORE);
 let t = 0;
@@ -17,31 +92,4 @@ function LOOP(){
   const form = FORM_ENGINE(matrix, t);
 
   const mia = { fusion: 60 };
-  const echo = { resonance: 40, state: "loud" };
-
-  const syn = SYN_CORE(mia, echo, form);
-
-  document.getElementById("etage").innerText = syn.etage;
-  document.getElementById("modul").innerText = syn.modul;
-  document.getElementById("aufgabe").innerText = syn.aufgabe;
-
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  for (let i = 0; i < 180; i++) {
-    const fade = Math.sin(t + i * 0.02);
-    if (fade < 0.2) continue;
-
-    const x = 450 + Math.sin(t + i * 0.01) * (syn.pulse * 80);
-    const y = 300 + Math.cos(t + i * 0.01) * (syn.warp * 80);
-
-    ctx.fillStyle = `rgba(${syn.drift * 40}, 200, 255, ${fade})`;
-    ctx.beginPath();
-    ctx.arc(x, y, 3, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  requestAnimationFrame(LOOP);
-}
-
-LOOP();
-</script>
+  const echo = { resonance: 40, state
