@@ -77,7 +77,7 @@
 import { FORM_CORE } from "./FORM_CORE.js";
 import { FORM_MATRIX } from "./FORM_MATRIX.js";
 import { FORM_ENGINE } from "./FORM_ENGINE.js";
-import { SYN_CORE } from "./syn.js";
+import { SYN_CORE } from "./syn.js";   // ← KORREKT
 
 let matrix = FORM_MATRIX(FORM_CORE);
 let t = 0;
@@ -92,4 +92,31 @@ function LOOP(){
   const form = FORM_ENGINE(matrix, t);
 
   const mia = { fusion: 60 };
-  const echo = { resonance: 40, state
+  const echo = { resonance: 40, state: "loud" };   // ← DEIN FEHLENDER TEIL
+
+  const syn = SYN_CORE(mia, echo, form);
+
+  document.getElementById("etage").innerText = syn.etage;
+  document.getElementById("modul").innerText = syn.modul;
+  document.getElementById("aufgabe").innerText = syn.aufgabe;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (let i = 0; i < 180; i++) {
+    const fade = Math.sin(t + i * 0.02);
+    if (fade < 0.2) continue;
+
+    const x = 450 + Math.sin(t + i * 0.01) * (syn.pulse * 80);
+    const y = 300 + Math.cos(t + i * 0.01) * (syn.warp * 80);
+
+    ctx.fillStyle = `rgba(${syn.drift * 40}, 200, 255, ${fade})`;
+    ctx.beginPath();
+    ctx.arc(x, y, 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  requestAnimationFrame(LOOP);
+}
+
+LOOP();
+</script>
