@@ -1,5 +1,3 @@
-import { FORM_ENGINE } from "./FORM_ENGINE.js";
-
 export function SYN_CORE(mia, echo, form){
     return {
         mode: "sync",
