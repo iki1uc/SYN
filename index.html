@@ -1,25 +1,21 @@
 <script type="module">
-import { BOOM_PARSE } from "./boom.parser.js";
-import { BOOM_MATRIX } from "./boom.matrix.js";
-import { BOOM_ENGINE } from "./boom.engine.js";
-import { SYN_CORE } from "./SYN_CORE.js";
+import { FORM_CORE } from "./FORM_CORE.js";
+import { FORM_MATRIX } from "./FORM_MATRIX.js";
+import { FORM_ENGINE } from "./FORM_ENGINE.js";
+import { SYN_CORE } from "./syn.js";
 
-let matrix = [];
+let matrix = FORM_MATRIX(FORM_CORE);
 let t = 0;
-
-BOOM_PARSE().then(csv => {
-  matrix = BOOM_MATRIX(csv);
-});
 
 function LOOP(){
   t += 0.01;
 
-  const boom = BOOM_ENGINE(matrix, t);
+  const form = FORM_ENGINE(matrix, t);
 
   const mia = { fusion: 60 };
   const echo = { resonance: 40, state: "loud" };
 
-  const syn = SYN_CORE(mia, echo, boom);
+  const syn = SYN_CORE(mia, echo, form);
 
   document.getElementById("etage").innerText = syn.etage;
   document.getElementById("modul").innerText = syn.modul;
