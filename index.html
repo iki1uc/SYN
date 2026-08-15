@@ -7,9 +7,14 @@ import { SYN_CORE } from "./syn.js";
 let matrix = FORM_MATRIX(FORM_CORE);
 let t = 0;
 
+// Canvas vorbereiten
+const canvas = document.getElementById("synth");
+const ctx = canvas.getContext("2d");
+
 function LOOP(){
   t += 0.01;
 
+  // Neue Formlichkeit
   const form = FORM_ENGINE(matrix, t);
 
   const mia = { fusion: 60 };
@@ -17,9 +22,26 @@ function LOOP(){
 
   const syn = SYN_CORE(mia, echo, form);
 
+  // UI aktualisieren
   document.getElementById("etage").innerText = syn.etage;
   document.getElementById("modul").innerText = syn.modul;
   document.getElementById("aufgabe").innerText = syn.aufgabe;
+
+  // Canvas zeichnen
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (let i = 0; i < 180; i++) {
+    const fade = Math.sin(t + i * 0.02);
+    if (fade < 0.2) continue;
+
+    const x = 450 + Math.sin(t + i * 0.01) * (syn.pulse * 80);
+    const y = 300 + Math.cos(t + i * 0.01) * (syn.warp * 80);
+
+    ctx.fillStyle = `rgba(${syn.drift * 40}, 200, 255, ${fade})`;
+    ctx.beginPath();
+    ctx.arc(x, y, 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
 
   requestAnimationFrame(LOOP);
 }
