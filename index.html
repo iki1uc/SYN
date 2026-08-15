@@ -2,7 +2,7 @@
 import { FORM_CORE } from "./FORM_CORE.js";
 import { FORM_MATRIX } from "./FORM_MATRIX.js";
 import { FORM_ENGINE } from "./FORM_ENGINE.js";
-import { SYN_CORE } from "./syn.js";
+import { SYN_CORE } from "./syn.js";   // ← KORREKT
 
 let matrix = FORM_MATRIX(FORM_CORE);
 let t = 0;
@@ -14,7 +14,6 @@ const ctx = canvas.getContext("2d");
 function LOOP(){
   t += 0.01;
 
-  // Neue Formlichkeit
   const form = FORM_ENGINE(matrix, t);
 
   const mia = { fusion: 60 };
@@ -22,12 +21,10 @@ function LOOP(){
 
   const syn = SYN_CORE(mia, echo, form);
 
-  // UI aktualisieren
   document.getElementById("etage").innerText = syn.etage;
   document.getElementById("modul").innerText = syn.modul;
   document.getElementById("aufgabe").innerText = syn.aufgabe;
 
-  // Canvas zeichnen
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   for (let i = 0; i < 180; i++) {
